@@ -16,6 +16,14 @@ li {
     overflow: hidden;
 }
 
+.game-board {
+    width: 100%;
+    height: 100%;
+    margin: 0 auto;
+    position: relative;
+}
+
+
 .boxes {
     padding: 0;
     width: 100%;
@@ -32,7 +40,6 @@ li {
     height: 30%;
     position: relative;
     display: inline-block;
-    position: relative;
     z-index: 1000;
     margin-left: 1px;
     margin-right: 1px;
@@ -56,6 +63,7 @@ li span {
     position: relative;
 }
 
+
 #myCanvas {
     width: 330px;
     height: 350px;
@@ -64,4 +72,31 @@ li span {
     left: 10px;
     top: 0;
     opacity: 1;
+}
+
+.draw-message,
+.win-message,
+.lose-message {
+    background: rgba(0, 0, 0, 0.8);
+    width: 400px;
+    height: 400px;
+    z-index: 2000;
+    display: none;
+    position: absolute;
+    top: -15px;
+    left: 0;
+    box-sizing: border-box;
+}
+
+.draw-message p,
+.win-message p,
+.lose-message p {
+    color: white;
+    text-align: center;
+    position: absolute;
+    font-size: 2.3rem;
+    margin: 0;
+    top: 150px;
+    left: 50px;
+    font-family: 'Architects Daughter', sans-serif;
 }
