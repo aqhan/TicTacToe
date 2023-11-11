@@ -61,8 +61,8 @@ MYAPP.game = {
         var box = $(square).children('i').children('span');
         if (box.text() === '') {
             box.text(symbol);
+            MYAPP.game.endTurn(symbol);
         }
-        MYAPP.game.endTurn(symbol);
     },
     endTurn: function () {
         if (MYAPP.turn === 1) {

@@ -51,7 +51,7 @@ MYAPP.display = {
       ctx.lineTo(300, 53);
       ctx.closePath();
       ctx.stroke();
-      
+
       ctx.beginPath();
       ctx.moveTo(0, 100);
       ctx.lineTo(300, 100);
@@ -88,8 +88,9 @@ MYAPP.game = {
     var box = $(square).children('i').children('span');
     if (box.text() === '') {
       box.text(symbol);
+      MYAPP.game.endTurn(symbol);
     }
-    MYAPP.game.endTurn(symbol);
+
   },
 
   endTurn: function () {
