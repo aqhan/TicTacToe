@@ -1,5 +1,6 @@
 interface MyApp {
   turn: number,
+  gameInPlay: boolean;
   timeOuts: number[],
   winCombos: number[][],
   playerOneSymbol: string,
@@ -19,6 +20,7 @@ interface MyApp {
     hideWinMessage: () => void,
     showLoseMessage: () => void,
     hideLoseMessage: () => void,
+    hideGameStarter: () => void,
   },
   game: {
     firstGame: () => void,
@@ -65,7 +67,8 @@ var MYAPP: MyApp = (window as any).MYAPP || {
   initializeGame: function (): void {
     MYAPP.initializeVars();
     MYAPP.display.drawBoard();
-    MYAPP.game.firstGame();
+    $('.game-starter .choose-x, .game-starter .choose-o').
+      off().on('click', MYAPP.game.firstGame)
   }
 };
 
@@ -99,6 +102,10 @@ MYAPP.display = {
   hideLoseMessage: function () {
     $('.lose-message').fadeOut(1000);
   },
+  hideGameStarter: function () {
+    $('.game-starter').fadeOut();
+  },
+
   drawBoard: function (): void {
     MYAPP.timeOuts.push(setTimeout(function () {
       let canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
@@ -147,10 +154,14 @@ MYAPP.display = {
 
 MYAPP.game = {
   firstGame: function () {
+    MYAPP.playerOneSymbol = $(this).text();
+    MYAPP.playerTwoSymbol = MYAPP.playerOneSymbol == 'X' ? 'O' : 'X';
     MYAPP.display.resetSquares();
+    MYAPP.display.hideGameStarter();
     MYAPP.game.play();
   },
   play: function () {
+    MYAPP.gameInPlay = true;
     MYAPP.turn = 1;
     $('.boxes li').on('click', function () {
       MYAPP.game.playTurn(this);
@@ -160,7 +171,7 @@ MYAPP.game = {
   playTurn: function (square: HTMLElement) {
     const symbol: string = MYAPP.turn === 1 ? MYAPP.playerOneSymbol : MYAPP.playerTwoSymbol;
     const box = $(square).children('i').children('span');
-    if (box.text() === '') {
+    if (box.text() === '' && MYAPP.gameInPlay) {
       // 填充棋盘
       box.text(symbol);
       // 拿到当前棋子的格子下标
@@ -175,19 +186,23 @@ MYAPP.game = {
   endTurn: function (symbol: string) {
     MYAPP.numFilledIn = MYAPP.numFilledIn + 1;
     let checkWin = MYAPP.game.checkWin(symbol)
-    // 判断是否胜利，不胜利则继续判断是否平局，不平局则继续
-    if (checkWin[0]) {
-      MYAPP.display.showWinMessage();
-      MYAPP.game.showWinningCombination(symbol, checkWin[1]);
-      MYAPP.game.reset()
-    } else if (MYAPP.numFilledIn >= 9) {
-      MYAPP.display.showDrawMessage();
-      MYAPP.game.reset()
-    } else {
-      if (MYAPP.turn === 1) {
-        MYAPP.turn = 2
-      } else if (MYAPP.turn === 2) {
-        MYAPP.turn = 1
+    if (MYAPP.gameInPlay) {
+      // 判断是否胜利，不胜利则继续判断是否平局，不平局则继续
+      if (checkWin[0]) {
+        MYAPP.gameInPlay = false;
+        MYAPP.display.showWinMessage();
+        MYAPP.game.showWinningCombination(symbol, checkWin[1]);
+        MYAPP.game.reset()
+      } else if (MYAPP.numFilledIn >= 9) {
+        MYAPP.gameInPlay = false;
+        MYAPP.display.showDrawMessage();
+        MYAPP.game.reset()
+      } else {
+        if (MYAPP.turn === 1) {
+          MYAPP.turn = 2
+        } else if (MYAPP.turn === 2) {
+          MYAPP.turn = 1
+        }
       }
     }
   },

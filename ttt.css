@@ -16,6 +16,10 @@ li {
     overflow: hidden;
 }
 
+/*============================================
+          Game Board
+============================================*/
+
 .game-board {
     width: 100%;
     height: 100%;
@@ -110,13 +114,16 @@ i.win {
     font-family: 'Architects Daughter', sans-serif;
 }
 
-/*============================
-    Win/Lose animation 
-==============================*/
-.rotate {
-    -webkit-animation: rotating 2s linear infinite;
-    -moz-animation: rotating 2s linear infinite;
-    -ms-animation: rotating 2s linear infinite;
-    -o-animation: rotating 2s linear infinite;
-    animation: rotating 2s linear infinite;
+/*============================================
+          Game Starter
+============================================*/
+
+.game-starter {
+    width: 100%;
+    height: 500px;
+    text-align: center;
+    font-family: 'Architects Daughter', Helvetica, sans-serif;
+    z-index: 1500;
+    position: absolute;
+    /* display:none; */
 }
