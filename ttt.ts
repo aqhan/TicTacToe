@@ -27,7 +27,7 @@ interface MyApp {
     updateSquare: (number: string, symbol: string) => void,
     endTurn: (symbol: string) => void,
     checkWin: (symbol: string) => [boolean, number[]],
-    showWinningCombination: () => void,
+    showWinningCombination: (symbol: string, winCombo: number[]) => void,
     reset: () => void,
   }
 }
@@ -108,21 +108,22 @@ MYAPP.display = {
 
       // vertical lines
       ctx.beginPath();
-      ctx.moveTo(100, 5);
+      ctx.moveTo(100, 0);
       ctx.lineTo(100, 150);
       ctx.closePath();
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(200, 5);
+      ctx.moveTo(200, 0);
       ctx.lineTo(200, 150);
       ctx.closePath();
       ctx.stroke();
 
       // horizontal lines
+      ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(0, 53);
-      ctx.lineTo(300, 53);
+      ctx.moveTo(0, 50);
+      ctx.lineTo(300, 50);
       ctx.closePath();
       ctx.stroke();
 
@@ -164,7 +165,7 @@ MYAPP.game = {
       box.text(symbol);
       // 拿到当前棋子的格子下标
       const number: string = $(square).attr('class')!;
-      MYAPP.game.updateSquare(number, symbol)
+      MYAPP.game.updateSquare(number, symbol);
       MYAPP.game.endTurn(symbol);
     }
   },
@@ -173,13 +174,15 @@ MYAPP.game = {
   },
   endTurn: function (symbol: string) {
     MYAPP.numFilledIn = MYAPP.numFilledIn + 1;
-
+    let checkWin = MYAPP.game.checkWin(symbol)
     // 判断是否胜利，不胜利则继续判断是否平局，不平局则继续
-    if (MYAPP.game.checkWin(symbol)[0]) {
-      MYAPP.game.showWinningCombination();
+    if (checkWin[0]) {
+      MYAPP.display.showWinMessage();
+      MYAPP.game.showWinningCombination(symbol, checkWin[1]);
       MYAPP.game.reset()
     } else if (MYAPP.numFilledIn >= 9) {
       MYAPP.display.showDrawMessage();
+      MYAPP.game.reset()
     } else {
       if (MYAPP.turn === 1) {
         MYAPP.turn = 2
@@ -208,9 +211,12 @@ MYAPP.game = {
     });
     return [isWin, winningCombo]
   },
-  showWinningCombination: function () {
-    MYAPP.display.showWinMessage();
-    console.log('you win')
+  showWinningCombination: function (symbol: string, winCombo: number[]) {
+    for (let i = 0; i < winCombo.length; i++) {
+      let currentBox = '.' + winCombo[i];
+
+      $(currentBox).children('i').addClass('win');
+    }
   },
   reset: function () {
     MYAPP.initializeVars();
