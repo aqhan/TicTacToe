@@ -76,7 +76,7 @@ li span {
     position: absolute;
     z-index: 0;
     margin: 10px;
-    opacity: 1;
+    opacity: 0;
 }
 
 span.rotate {
