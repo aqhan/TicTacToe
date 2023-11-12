@@ -28,6 +28,7 @@ interface MyApp {
     endTurn: (symbol: string) => void,
     checkWin: (symbol: string) => [boolean, number[]],
     showWinningCombination: () => void,
+    reset: () => void,
   }
 }
 
@@ -176,6 +177,7 @@ MYAPP.game = {
     // 判断是否胜利，不胜利则继续判断是否平局，不平局则继续
     if (MYAPP.game.checkWin(symbol)[0]) {
       MYAPP.game.showWinningCombination();
+      MYAPP.game.reset()
     } else if (MYAPP.numFilledIn >= 9) {
       MYAPP.display.showDrawMessage();
     } else {
@@ -204,12 +206,31 @@ MYAPP.game = {
       }
       return win;
     });
-
     return [isWin, winningCombo]
   },
   showWinningCombination: function () {
     MYAPP.display.showWinMessage();
     console.log('you win')
+  },
+  reset: function () {
+    MYAPP.initializeVars();
+
+    MYAPP.timeOuts.push(
+      setTimeout(function () {
+        MYAPP.display.hideDrawMessage();
+        MYAPP.display.hideLoseMessage();
+        MYAPP.display.hideWinMessage();
+        $('.boxes li').fadeOut();
+      }, 4000),
+      setTimeout(function () {
+        MYAPP.display.resetSquares();
+        $('.boxes li').fadeIn();
+        MYAPP.numFilledIn = 0;
+      }, 5000),
+      setTimeout(function () {
+        MYAPP.game.play();
+      }, 6000)
+    );
   }
 };
 
