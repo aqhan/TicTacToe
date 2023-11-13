@@ -92,7 +92,8 @@ MYAPP.display = {
   showWinMessage: function () {
     MYAPP.timeOuts.push(
       setTimeout(function () {
-        $('.win-message').fadeIn(500);
+        $('.win-message').fadeIn(500).
+          children('p').text("Player " + MYAPP.turn + " win");
       }, 1500));
   },
   hideWinMessage: function () {
