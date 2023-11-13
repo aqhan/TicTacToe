@@ -95,6 +95,48 @@ li span {
     opacity: 0;
 }
 
+.points-divider,
+.score-1,
+.score-2 {
+    position: absolute;
+    font-size: .9rem;
+    margin: 0;
+    display: none;
+}
+
+.score-1,
+.score-2 {
+    font-family: 'Architects Daughter', sans-serif;
+    top: 17px;
+    color: rgba(100, 60, 50, .8);
+}
+
+.score-1 .points,
+.score-2 .points {
+    position: absolute;
+    text-align: center;
+    bottom: 14px;
+    color: rgba(100, 60, 50, .9);
+    font-family: 'Architects Daughter', sans-serif;
+}
+
+.points-divider {
+    top: 5px;
+    left: 141px;
+    font-size: 2rem;
+    font-family: helvetica, sans-serif;
+    font-style: normal;
+    opacity: .2;
+}
+
+.score-1 {
+    left: 75px;
+}
+
+.score-2 {
+    left: 161px;
+}
+
 span.rotate {
     color: rgba(0, 200, 200, 1);
 }

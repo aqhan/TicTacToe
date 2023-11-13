@@ -1,6 +1,8 @@
 "use strict";
 var MYAPP = window.MYAPP || {
     gameInPlay: false,
+    playerOneScore: 0,
+    playerTwoScore: 0,
     winCombos: [
         [1, 2, 3],
         [4, 5, 6],
@@ -99,6 +101,14 @@ MYAPP.display = {
             let box = '<li class="' + i + '"><i class="letter"><span></span></i></li>';
             $(box).appendTo($('.boxes'));
         }
+    },
+    showScore: function () {
+        $('.score-1, .score-2').children('.points').text('0');
+        $('.score-1, .score-2, .points-divider').fadeIn();
+    },
+    updateScore: function (turn) {
+        let currentScore = turn === 1 ? MYAPP.playerOneScore : MYAPP.playerTwoScore;
+        $('.score-' + turn).children('.points').text(currentScore);
     }
 };
 MYAPP.game = {
@@ -108,6 +118,9 @@ MYAPP.game = {
         $('#myCanvas').animate({ 'opacity': '1' }, 1200);
         MYAPP.display.resetSquares();
         MYAPP.display.hideGameStarter();
+        $('#myCanvas').animate({ 'opacity': '1' }, 1200);
+        MYAPP.display.showScore();
+        MYAPP.display.resetSquares();
         MYAPP.game.play();
     },
     play: function () {
@@ -132,12 +145,17 @@ MYAPP.game = {
     updateSquare: function (number, symbol) {
         MYAPP.currentBoard[number] = symbol;
     },
+    updateScore: function (turn) {
+        turn === 1 ? MYAPP.playerOneScore += 1 : MYAPP.playerTwoScore += 1;
+        MYAPP.display.updateScore(turn);
+    },
     endTurn: function (symbol) {
         MYAPP.numFilledIn = MYAPP.numFilledIn + 1;
         let checkWin = MYAPP.game.checkWin(symbol);
         if (MYAPP.gameInPlay) {
             // 判断是否胜利，不胜利则继续判断是否平局，不平局则继续
             if (checkWin[0]) {
+                MYAPP.game.updateScore(MYAPP.turn);
                 MYAPP.gameInPlay = false;
                 MYAPP.display.showWinMessage();
                 MYAPP.game.showWinningCombination(symbol, checkWin[1]);
@@ -180,7 +198,7 @@ MYAPP.game = {
     showWinningCombination: function (symbol, winCombo) {
         for (let i = 0; i < winCombo.length; i++) {
             let currentBox = '.' + winCombo[i];
-            $(currentBox).children('i').addClass('win');
+            $(currentBox).children('i').addClass('win').children('span').addClass('rotate');
         }
     },
     reset: function () {
