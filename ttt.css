@@ -177,6 +177,10 @@ i.win {
 ============================================*/
 
 .game-starter {
+    background: rgba(40, 40, 40, 1) -webkit-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background: rgba(40, 40, 40, 1) -moz-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background: rgba(40, 40, 40, 1) -ms-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background: rgba(40, 40, 40, 1) radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
     width: 100%;
     height: 500px;
     text-align: center;
@@ -185,3 +189,35 @@ i.win {
     position: absolute;
     /* display:none; */
 }
+
+.game-starter p {
+    font-size: 2.2rem;
+}
+
+.game-starter button,
+.game-starter p {
+    color: rgba(220, 220, 220, 1);
+    position: relative;
+    top: 50px;
+    margin: 10px auto;
+}
+
+.game-starter p {
+    max-width: 80%;
+}
+
+.game-starter button {
+    background: none;
+    opacity: .6;
+    border-radius: 20px;
+    border: 2px solid transparent;
+    font-size: 2.8rem;
+}
+
+.game-starter button:focus {
+    outline: none;
+}
+
+.game-starter button:hover {
+    opacity: 1;
+    border: 2px dashed rgba(230, 230, 230, .5);
