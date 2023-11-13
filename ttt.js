@@ -11,8 +11,6 @@ var MYAPP = window.MYAPP || {
         [1, 5, 9],
         [3, 5, 7],
     ],
-    playerOneSymbol: 'X',
-    playerTwoSymbol: 'O',
     timeOuts: [],
     initializeVars: function () {
         this.numFilledIn = 0;
@@ -107,10 +105,9 @@ MYAPP.game = {
     firstGame: function () {
         MYAPP.playerOneSymbol = $(this).text();
         MYAPP.playerTwoSymbol = MYAPP.playerOneSymbol == 'X' ? 'O' : 'X';
-        MYAPP.display.resetSquares();
-        MYAPP.display.hideGameStarter();
         $('#myCanvas').animate({ 'opacity': '1' }, 1200);
         MYAPP.display.resetSquares();
+        MYAPP.display.hideGameStarter();
         MYAPP.game.play();
     },
     play: function () {
