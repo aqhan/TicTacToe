@@ -109,6 +109,8 @@ MYAPP.game = {
         MYAPP.playerTwoSymbol = MYAPP.playerOneSymbol == 'X' ? 'O' : 'X';
         MYAPP.display.resetSquares();
         MYAPP.display.hideGameStarter();
+        $('#myCanvas').animate({ 'opacity': '1' }, 1200);
+        MYAPP.display.resetSquares();
         MYAPP.game.play();
     },
     play: function () {

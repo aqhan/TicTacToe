@@ -8,9 +8,25 @@ li {
     list-style: none;
 }
 
+.outer-container {
+    background: rgba(240, 180, 135, 1);
+    box-shadow: inset -1px 1px 7px rgba(0, 0, 0, .2), inset 1px -1px 7px rgba(0, 0, 0, .2), 1px 12px 5px rgba(0, 0, 0, .4), 4px 3px 8px rgba(0, 0, 0, .4), 5px 10px 10px rgba(0, 0, 0, .2), -5px 10px 10px rgba(0, 0, 0, .4);
+    position: relative;
+    border-radius: 10px;
+    width: 400px;
+    height: 390px;
+    margin: 10% auto;
+    padding: 40px 0 0;
+}
+
 .board-container {
     width: 350px;
     height: 350px;
+    background: rgba(40, 40, 40, 1) -webkit-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background: rgba(40, 40, 40, 1) -moz-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background: rgba(40, 40, 40, 1) -ms-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background: rgba(40, 40, 40, 1) radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
+    background-size: cover;
     position: relative;
     margin: 0 auto;
     overflow: hidden;

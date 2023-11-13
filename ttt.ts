@@ -229,7 +229,6 @@ MYAPP.game = {
   showWinningCombination: function (symbol: string, winCombo: number[]) {
     for (let i = 0; i < winCombo.length; i++) {
       let currentBox = '.' + winCombo[i];
-
       $(currentBox).children('i').addClass('win');
     }
   },
