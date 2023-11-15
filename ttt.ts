@@ -23,12 +23,16 @@ interface MyApp {
     hideWinMessage: () => void,
     showLoseMessage: () => void,
     hideLoseMessage: () => void,
+    showGameStarter: () => void,
     hideGameStarter: () => void,
     showScore: () => void,
     showPlayerOnePrompt: () => void,
     showPlayerTwoPrompt: () => void,
     hidePlayerOnePrompt: () => void,
     hidePlayerTwoPrompt: () => void,
+    hideScore: () => void,
+    showGameReset: () => void,
+    hideGameReset: () => void,
   },
   game: {
     whoStarts: () => number,
@@ -41,6 +45,7 @@ interface MyApp {
     checkWin: (symbol: string) => [boolean, number[]],
     showWinningCombination: (symbol: string, winCombo: number[]) => void,
     reset: () => void,
+    resetGame: () => void,
   }
 }
 
@@ -78,7 +83,8 @@ var MYAPP: MyApp = (window as any).MYAPP || {
     MYAPP.initializeVars();
     MYAPP.display.drawBoard();
     $('.game-starter .choose-x, .game-starter .choose-o').
-      off().on('click', MYAPP.game.firstGame)
+      off().on('click', MYAPP.game.firstGame);
+    $('.hard-reset').on('click', MYAPP.game.resetGame);
   }
 };
 
@@ -113,6 +119,9 @@ MYAPP.display = {
   hideLoseMessage: function () {
     $('.lose-message').fadeOut(1000);
   },
+  showGameStarter: function () {
+    $('.game-starter').fadeIn(500);
+  },
   hideGameStarter: function () {
     $('.game-starter').fadeOut();
   },
@@ -131,6 +140,12 @@ MYAPP.display = {
   },
   hidePlayerTwoPrompt: function () {
     $('.player-two-turn').animate({ 'top': '0' }, 500);
+  },
+  showGameReset: function () {
+    $('.hard-reset').fadeIn(500);
+  },
+  hideGameReset: function () {
+    $('.hard-reset').fadeOut(500);
   },
   drawBoard: function (): void {
     MYAPP.timeOuts.push(setTimeout(function () {
@@ -178,7 +193,10 @@ MYAPP.display = {
   },
   showScore: function () {
     $('.score-1, .score-2').children('.points').text('0');
-    $('.score-1, .score-2, .points-divider').fadeIn();
+    $('.score-1, .score-2, .points-divider').fadeIn(500);
+  },
+  hideScore: function () {
+    $('.points-divider, .score-1, .score-2').fadeOut(500);
   },
   updateScore: function (turn) {
     let currentScore = turn === 1 ? MYAPP.playerOneScore : MYAPP.playerTwoScore;
@@ -195,12 +213,11 @@ MYAPP.game = {
     MYAPP.playerOneSymbol = $(this).text();
     MYAPP.playerTwoSymbol = MYAPP.playerOneSymbol == 'X' ? 'O' : 'X';
     MYAPP.turn = MYAPP.game.whoStarts();
-    $('#myCanvas').animate({ 'opacity': '1' }, 1200);
-    MYAPP.display.resetSquares();
     MYAPP.display.hideGameStarter();
     $('#myCanvas').animate({ 'opacity': '1' }, 1200);
-    MYAPP.display.showScore();
     MYAPP.display.resetSquares();
+    MYAPP.display.showGameReset();
+    MYAPP.display.showScore();
     MYAPP.game.play();
   },
   play: function () {
@@ -314,7 +331,25 @@ MYAPP.game = {
         MYAPP.game.play();
       }, 6000)
     );
-  }
+  },
+  resetGame: function () {
+    MYAPP.initializeVars();
+    MYAPP.display.resetSquares();
+    MYAPP.playerOneScore = 0;
+    MYAPP.playerTwoScore = 0;
+    MYAPP.gameInPlay = false;
+    MYAPP.display.hideGameReset();
+    MYAPP.display.hideScore();
+    MYAPP.display.showGameStarter();
+    MYAPP.timeOuts.forEach(function (timer) {
+      clearTimeout(timer);
+    });
+    $('.draw-message, .win-message, .lose-message').hide();
+    MYAPP.display.hidePlayerOnePrompt();
+    MYAPP.display.hidePlayerTwoPrompt();
+
+  },
+
 };
 
 $(function () {
