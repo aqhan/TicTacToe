@@ -56,7 +56,7 @@ li {
     gap: 4px;
     justify-content: center;
     align-content: center;
-    top: 0;
+    top: -4px;
 }
 
 

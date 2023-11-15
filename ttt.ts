@@ -19,7 +19,7 @@ interface MyApp {
     resetSquares: () => void,
     showDrawMessage: () => void,
     hideDrawMessage: () => void,
-    showWinMessage: () => void,
+    showWinMessage: (turn: number) => void,
     hideWinMessage: () => void,
     showLoseMessage: () => void,
     hideLoseMessage: () => void,
@@ -94,11 +94,11 @@ MYAPP.display = {
   hideDrawMessage: function () {
     $('.draw-message').fadeOut(1000);
   },
-  showWinMessage: function () {
+  showWinMessage: function (turn: number) {
     MYAPP.timeOuts.push(
       setTimeout(function () {
         $('.win-message').fadeIn(500).
-          children('p').text("Player " + MYAPP.turn + " win");
+          children('p').text("Player " + turn + " win");
       }, 1500));
   },
   hideWinMessage: function () {
@@ -137,7 +137,7 @@ MYAPP.display = {
       let canvas = document.getElementById("myCanvas") as HTMLCanvasElement;
       let ctx = canvas.getContext("2d")!;
       ctx.lineWidth = 1;
-      ctx.strokeStyle = "#000";
+      ctx.strokeStyle = "#fff";
 
       // vertical lines
       ctx.beginPath();
@@ -155,14 +155,14 @@ MYAPP.display = {
       // horizontal lines
       ctx.lineWidth = 1;
       ctx.beginPath();
-      ctx.moveTo(0, 50);
-      ctx.lineTo(300, 50);
+      ctx.moveTo(0, 48.5);
+      ctx.lineTo(300, 48.5);
       ctx.closePath();
       ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(0, 100);
-      ctx.lineTo(300, 100);
+      ctx.moveTo(0, 98.5);
+      ctx.lineTo(300, 98.5);
       ctx.closePath();
       ctx.stroke();
     }, 1500))
@@ -247,7 +247,7 @@ MYAPP.game = {
         MYAPP.gameInPlay = false;
         MYAPP.display.hidePlayerOnePrompt();
         MYAPP.display.hidePlayerTwoPrompt();
-        MYAPP.display.showWinMessage();
+        MYAPP.display.showWinMessage(MYAPP.turn);
         MYAPP.game.showWinningCombination(symbol, checkWin[1]);
         MYAPP.game.reset()
       } else if (MYAPP.numFilledIn >= 9) {
