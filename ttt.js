@@ -64,6 +64,20 @@ MYAPP.display = {
     hideGameStarter: function () {
         $('.game-starter').fadeOut();
     },
+    showPlayerOnePrompt: function () {
+        $('.player-one-turn p').text("Go Player 1");
+        $('.player-one-turn').animate({ 'top': '-45px' }, 500);
+    },
+    showPlayerTwoPrompt: function () {
+        $('.player-two-turn p').text("Go Player 2");
+        $('.player-two-turn').animate({ 'top': '-45px' }, 500);
+    },
+    hidePlayerOnePrompt: function () {
+        $('.player-one-turn').animate({ 'top': '0' }, 500);
+    },
+    hidePlayerTwoPrompt: function () {
+        $('.player-two-turn').animate({ 'top': '0' }, 500);
+    },
     drawBoard: function () {
         MYAPP.timeOuts.push(setTimeout(function () {
             let canvas = document.getElementById("myCanvas");
@@ -134,6 +148,14 @@ MYAPP.game = {
         $('.boxes li').on('click', function () {
             MYAPP.game.playTurn(this);
         });
+        MYAPP.timeOuts.push(setTimeout(function () {
+            if (MYAPP.turn === 1) {
+                MYAPP.display.showPlayerOnePrompt();
+            }
+            else if (MYAPP.turn === 2) {
+                MYAPP.display.showPlayerTwoPrompt();
+            }
+        }, 600));
     },
     playTurn: function (square) {
         const symbol = MYAPP.turn === 1 ? MYAPP.playerOneSymbol : MYAPP.playerTwoSymbol;
@@ -162,21 +184,29 @@ MYAPP.game = {
             if (checkWin[0]) {
                 MYAPP.game.updateScore(MYAPP.turn);
                 MYAPP.gameInPlay = false;
+                MYAPP.display.hidePlayerOnePrompt();
+                MYAPP.display.hidePlayerTwoPrompt();
                 MYAPP.display.showWinMessage();
                 MYAPP.game.showWinningCombination(symbol, checkWin[1]);
                 MYAPP.game.reset();
             }
             else if (MYAPP.numFilledIn >= 9) {
                 MYAPP.gameInPlay = false;
+                MYAPP.display.hidePlayerOnePrompt();
+                MYAPP.display.hidePlayerTwoPrompt();
                 MYAPP.display.showDrawMessage();
                 MYAPP.game.reset();
             }
             else {
                 if (MYAPP.turn === 1) {
                     MYAPP.turn = 2;
+                    MYAPP.display.hidePlayerOnePrompt();
+                    MYAPP.display.showPlayerTwoPrompt();
                 }
                 else if (MYAPP.turn === 2) {
                     MYAPP.turn = 1;
+                    MYAPP.display.hidePlayerTwoPrompt();
+                    MYAPP.display.showPlayerOnePrompt();
                 }
             }
         }

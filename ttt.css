@@ -95,6 +95,42 @@ li span {
     opacity: 0;
 }
 
+/*============================================
+          Game Prompt
+============================================*/
+
+.player-one-turn {
+    background: rgba(0, 200, 200, 1);
+    left: 15px;
+}
+
+.player-two-turn {
+    background: rgba(200, 100, 100, 1);
+    right: 15px;
+}
+
+.player-one-turn,
+.player-two-turn {
+    position: absolute;
+    top: 0;
+    width: 170px;
+    height: 50px;
+    z-index: -10;
+    color: white;
+    text-align: center;
+}
+
+.player-one-turn p,
+.player-two-turn p {
+    font-size: 1.3rem;
+    margin-top: 10px;
+}
+
+/*============================================
+          Game Score
+============================================*/
+
+
 .points-divider,
 .score-1,
 .score-2 {
@@ -136,6 +172,10 @@ li span {
 .score-2 {
     left: 161px;
 }
+
+/*============================================
+          Game Result
+============================================*/
 
 span.rotate {
     color: rgba(0, 200, 200, 1);
