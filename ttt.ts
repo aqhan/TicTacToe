@@ -27,6 +27,7 @@ interface MyApp {
     showScore: () => void,
   },
   game: {
+    whoStarts: () => number,
     firstGame: () => void,
     play: () => void,
     playTurn: (square: HTMLElement) => void,
@@ -167,9 +168,14 @@ MYAPP.display = {
 };
 
 MYAPP.game = {
+  whoStarts: function () {
+    var random = Math.floor(Math.random() * 2 + 1);
+    return random;
+  },
   firstGame: function () {
     MYAPP.playerOneSymbol = $(this).text();
     MYAPP.playerTwoSymbol = MYAPP.playerOneSymbol == 'X' ? 'O' : 'X';
+    MYAPP.turn = MYAPP.game.whoStarts();
     $('#myCanvas').animate({ 'opacity': '1' }, 1200);
     MYAPP.display.resetSquares();
     MYAPP.display.hideGameStarter();
@@ -180,7 +186,6 @@ MYAPP.game = {
   },
   play: function () {
     MYAPP.gameInPlay = true;
-    MYAPP.turn = 1;
     $('.boxes li').on('click', function () {
       MYAPP.game.playTurn(this);
     })
@@ -257,7 +262,7 @@ MYAPP.game = {
   },
   reset: function () {
     MYAPP.initializeVars();
-
+    MYAPP.turn = MYAPP.game.whoStarts();
     MYAPP.timeOuts.push(
       setTimeout(function () {
         MYAPP.display.hideDrawMessage();
