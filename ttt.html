@@ -5,7 +5,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
     <link href="ttt.css" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Architects+Daughter' rel='stylesheet' type='text/css'>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js" defer></script>
     <script src="ttt.js" defer></script>
 </head>
 
@@ -23,9 +23,14 @@
         </div>
         <div class="board-container">
             <div class="game-starter">
-                <p>Player 1: would you like to be X or O?</p>
+                <p>Would you like to be X or O?</p>
                 <button class="choose-x">X</button>
                 <button class="choose-o">O</button>
+            </div>
+            <div class="game-choice">
+                <p>How do you want to play?</p>
+                <button class="one-player">One Player</button>
+                <button class="two-player">Two Player</button>
             </div>
             <div class="game-board">
                 <div class="draw-message">

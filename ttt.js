@@ -31,8 +31,13 @@ var MYAPP = window.MYAPP || {
     initializeGame: function () {
         MYAPP.initializeVars();
         MYAPP.display.drawBoard();
-        $('.game-starter .choose-x, .game-starter .choose-o').
-            off().on('click', MYAPP.game.firstGame);
+        $('.game-choice button').on('click', function () {
+            MYAPP.secondPlayer = MYAPP.game.gameSelection(this);
+            MYAPP.display.hideGameChoice();
+            MYAPP.display.showGameStarter(MYAPP.secondPlayer);
+            $('.game-starter .choose-x, .game-starter .choose-o').
+                off().on('click', MYAPP.game.firstGame);
+        });
         $('.hard-reset').on('click', MYAPP.game.resetGame);
     }
 };
@@ -62,8 +67,17 @@ MYAPP.display = {
     hideLoseMessage: function () {
         $('.lose-message').fadeOut(1000);
     },
-    showGameStarter: function () {
-        $('.game-starter').fadeIn(500);
+    showGameStarter: function (isTwoPlayer) {
+        let message;
+        if (isTwoPlayer) {
+            message = "Player 1: Would you like X or O?";
+        }
+        else {
+            message = " Would you like X or O?";
+        }
+        MYAPP.timeOuts.push(setTimeout(function () {
+            $('.game-starter').fadeIn(500).children('p').text(message);
+        }, 700));
     },
     hideGameStarter: function () {
         $('.game-starter').fadeOut();
@@ -83,10 +97,16 @@ MYAPP.display = {
         $('.player-two-turn').animate({ 'top': '0' }, 500);
     },
     showGameReset: function () {
-        $('.hard-reset').fadeIn(500);
+        $('.hard-reset').fadeIn(600);
     },
     hideGameReset: function () {
-        $('.hard-reset').fadeOut(500);
+        $('.hard-reset').fadeOut(600);
+    },
+    showGameChoice: function () {
+        $('.game-choice').fadeIn(600);
+    },
+    hideGameChoice: function () {
+        $('.game-choice').fadeOut(600);
     },
     drawBoard: function () {
         MYAPP.timeOuts.push(setTimeout(function () {
@@ -143,6 +163,12 @@ MYAPP.game = {
     whoStarts: function () {
         var random = Math.floor(Math.random() * 2 + 1);
         return random;
+    },
+    gameSelection: function (item) {
+        if ($(item).text() === 'One Player') {
+            return false;
+        }
+        return true;
     },
     firstGame: function () {
         MYAPP.playerOneSymbol = $(this).text();
@@ -270,15 +296,16 @@ MYAPP.game = {
         MYAPP.playerOneScore = 0;
         MYAPP.playerTwoScore = 0;
         MYAPP.gameInPlay = false;
+        $('#myCanvas').animate({ 'opacity': '0' }, 100);
         MYAPP.display.hideGameReset();
         MYAPP.display.hideScore();
-        MYAPP.display.showGameStarter();
         MYAPP.timeOuts.forEach(function (timer) {
             clearTimeout(timer);
         });
         $('.draw-message, .win-message, .lose-message').hide();
         MYAPP.display.hidePlayerOnePrompt();
         MYAPP.display.hidePlayerTwoPrompt();
+        MYAPP.display.showGameChoice();
     },
 };
 $(function () {

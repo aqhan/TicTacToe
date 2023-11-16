@@ -110,6 +110,7 @@ li span {
 }
 
 /* canvas */
+
 #myCanvas {
     width: 330px;
     height: 330px;
@@ -239,7 +240,7 @@ i.win {
 /*============================================
           Game Starter
 ============================================*/
-
+.game-choice,
 .game-starter {
     background: rgba(40, 40, 40, 1) -webkit-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
     background: rgba(40, 40, 40, 1) -moz-radial-gradient(center, rgba(40, 80, 60, 1), rgba(0, 20, 20, .6));
@@ -253,10 +254,18 @@ i.win {
     position: absolute;
 }
 
+.game-starter {
+    display: none;
+}
+
+.game-choice p,
 .game-starter p {
     font-size: 2.2rem;
 }
 
+
+.game-choice button,
+.game-choice p,
 .game-starter button,
 .game-starter p {
     color: rgba(220, 220, 220, 1);
@@ -265,23 +274,35 @@ i.win {
     margin: 10px auto;
 }
 
+.game-choice p,
 .game-starter p {
     max-width: 80%;
 }
 
+.game-choice button,
 .game-starter button {
     background: none;
     opacity: .6;
     border-radius: 20px;
     border: 2px solid transparent;
+    font-size: 1.7rem;
+}
+
+.game-starter button {
     font-size: 2.8rem;
 }
 
+.game-choice button:focus,
 .game-starter button:focus {
     outline: none;
 }
 
+.game-choice button:hover,
 .game-starter button:hover {
     opacity: 1;
     border: 2px dashed rgba(230, 230, 230, .5);
+}
+
+button {
+    cursor: pointer;
 }
