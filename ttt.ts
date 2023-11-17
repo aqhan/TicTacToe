@@ -129,7 +129,7 @@ MYAPP.display = {
     MYAPP.timeOuts.push(
       setTimeout(function () {
         $('.win-message').fadeIn(500).
-          children('p').text("Player " + turn + " win");
+          children('p').text("玩家 " + turn + " 获胜");
       }, 1500));
   },
   hideWinMessage: function () {
@@ -147,9 +147,9 @@ MYAPP.display = {
   showGameStarter: function (isTwoPlayer) {
     let message: string;
     if (isTwoPlayer) {
-      message = "Player 1: Would you like X or O?";
+      message = "玩家 1: 选择 X or O?";
     } else {
-      message = " Would you like X or O?";
+      message = "选择 X or O?";
     }
     MYAPP.timeOuts.push(
       setTimeout(function () {
@@ -161,17 +161,17 @@ MYAPP.display = {
   },
   showPlayerOnePrompt: function () {
     if (MYAPP.secondPlayer) {
-      $('.player-one-turn p').text("Go Player 1");
+      $('.player-one-turn p').text("玩家 1 的回合");
     } else {
-      $('.player-one-turn p').text("Your turn");
+      $('.player-one-turn p').text("你的回合");
     }
     $('.player-one-turn').animate({ 'top': '-45px' }, 500);
   },
   showPlayerTwoPrompt: function () {
     if (MYAPP.secondPlayer) {
-      $('.player-two-turn p').text("Go Player 2")
+      $('.player-two-turn p').text("玩家 2 的回合")
     } else {
-      $('.player-two-turn p').text("computer's turn");
+      $('.player-two-turn p').text("电脑的回合");
     }
     $('.player-two-turn').animate({ 'top': '-45px' }, 500);
   },
@@ -239,12 +239,12 @@ MYAPP.display = {
   },
   showScore: function () {
     if (MYAPP.secondPlayer) {
-      $('.score-1').children('.name').text('player 1');
-      $('.score-2').children('.name').text('player 2');
+      $('.score-1').children('.name').text('玩家 1');
+      $('.score-2').children('.name').text('玩家 2');
     }
     else {
-      $('.score-1').children('.name').text('player 1');
-      $('.score-2').children('.name').text('computer');
+      $('.score-1').children('.name').text('玩家');
+      $('.score-2').children('.name').text('电脑');
     }
     $('.score-1, .score-2').children('.points').text('0');
     $('.score-1, .score-2, .points-divider').fadeIn(500);
@@ -264,7 +264,7 @@ MYAPP.game = {
     return random;
   },
   gameSelection: function (item: object): boolean {
-    if ($(item).text() === 'One Player') {
+    if ($(item).text() === $('.one-player').text()) {
       return false;
     }
     return true;

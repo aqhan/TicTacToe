@@ -270,8 +270,8 @@ i.win {
 .game-starter p {
     color: rgba(220, 220, 220, 1);
     position: relative;
-    top: 50px;
-    margin: 10px auto;
+    top: 80px;
+    margin: 20px auto;
 }
 
 .game-choice p,
