@@ -50,6 +50,17 @@ interface MyApp {
     showWinningCombination: (symbol: string, winCombo: number[]) => void,
     reset: () => void,
     resetGame: () => void,
+    computerPlay: () => void,
+  },
+  computer: {
+    computerWhichMove: () => number | boolean,
+    winOrBlockChoice: (choiceType: string, board?: { [key: string]: string }) => number[]
+    doubleThreatChoice: (choiceType: string) => number | boolean
+    firstPlay: () => number | boolean;
+    playCenter: () => number | boolean;
+    emptyCorner: () => number | boolean;
+    emptySide: () => number | boolean;
+    diagonalSecondAttack: () => number | boolean;
   }
 }
 
@@ -255,7 +266,7 @@ MYAPP.game = {
     MYAPP.gameInPlay = true;
     $('.boxes li').on('click', function () {
       MYAPP.game.playTurn(this);
-    })
+    });
     MYAPP.timeOuts.push(
       setTimeout(function () {
         if (MYAPP.turn === 1) {
@@ -263,19 +274,42 @@ MYAPP.game = {
         } else if (MYAPP.turn === 2) {
           MYAPP.display.showPlayerTwoPrompt();
         }
-      }, 600));
+      }, 1500),
+      setTimeout(function () {
+        if (MYAPP.turn === 2 && !MYAPP.secondPlayer) {
+          MYAPP.game.computerPlay();
+        }
+      }, 1200)
+    );
   },
 
   playTurn: function (square: HTMLElement) {
     const symbol: string = MYAPP.turn === 1 ? MYAPP.playerOneSymbol : MYAPP.playerTwoSymbol;
     const box = $(square).children('i').children('span');
-    if (box.text() === '' && MYAPP.gameInPlay) {
+
+    // (MYAPP.turn === 2 && MYAPP.secondPlayer) 为防止在电脑回合时，玩家点到棋盘也下棋。
+    if (box.text() === '' && MYAPP.gameInPlay && (MYAPP.turn === 1
+      || (MYAPP.turn === 2 && MYAPP.secondPlayer))) {
       // 填充棋盘
       box.text(symbol);
       // 拿到当前棋子的格子下标
       const number: string = $(square).attr('class')!;
       MYAPP.game.updateSquare(number, symbol);
       MYAPP.game.endTurn(symbol);
+    }
+  },
+  computerPlay: function () {
+    let boxNumber: number;
+    if (MYAPP.computer.computerWhichMove() && MYAPP.turn === 2) {
+      boxNumber = MYAPP.computer.computerWhichMove() as number;
+      let currentBox = $('.' + boxNumber).children('i');
+      let symbol = MYAPP.playerTwoSymbol;
+      MYAPP.timeOuts.push(
+        setTimeout(function () {
+          currentBox.children('span').text(symbol);
+          MYAPP.game.updateSquare((boxNumber).toString(), symbol);
+          MYAPP.game.endTurn(symbol);
+        }), 1000);
     }
   },
   updateSquare: function (number: string, symbol: string) {
@@ -309,6 +343,10 @@ MYAPP.game = {
           MYAPP.turn = 2
           MYAPP.display.hidePlayerOnePrompt();
           MYAPP.display.showPlayerTwoPrompt();
+          // 如果选择 one player 模式，则调用电脑
+          if (!MYAPP.secondPlayer) {
+            MYAPP.game.computerPlay();
+          }
         } else if (MYAPP.turn === 2) {
           MYAPP.turn = 1
           MYAPP.display.hidePlayerTwoPrompt();
@@ -381,10 +419,176 @@ MYAPP.game = {
     MYAPP.display.hidePlayerTwoPrompt();
     MYAPP.display.showGameChoice();
   },
-
 };
 
-$(function () {
-  MYAPP.initializeGame();
+MYAPP.computer = {
+  computerWhichMove: function (): number | boolean {
+    // win 代表电脑计算自身能赢的下法
+    // block 代表电脑计算阻止对方赢的下法
+    // 若电脑能赢，优先考虑能赢的下法
+    let move: number | boolean = this.winOrBlockChoice('win')[0];
+    if (!move) {
+      move = this.winOrBlockChoice('block')[0];
+    }
+    if (!move) {
+      move = this.doubleThreatChoice('win');
+    }
+    if (!move) {
+      move = this.doubleThreatChoice('block');
+    }
+    if (!move) {
+      move = this.firstPlay();
+    }
+    if (!move) {
+      move = this.playCenter();
+    }
+    if (!move) {
+      move = this.emptyCorner();
+    }
+    if (!move) {
+      move = this.emptySide();
+    }
+    if (typeof move === 'number' && MYAPP.currentBoard[move] === '') {
+      return move
+    }
+    return false;
+  },
+  winOrBlockChoice: function (choiceType: string, board?: { [key: string]: string }) {
+    let localBoard = board || MYAPP.currentBoard;
+    let currentSymbol: string;
+    let opponentSymbol: string;
+    // 电脑固定为玩家二，因此能赢时，当前符号为玩家二，此时棋子的落法为让自身赢
+    // 若不能赢时，当前符号为玩家一，即站在对方角度思考能赢的下法，然后下这一步阻止对方赢。
+    if (choiceType === 'win') {
+      currentSymbol = MYAPP.playerTwoSymbol;
+      opponentSymbol = MYAPP.playerOneSymbol;
+    } else if (choiceType === 'block') {
+      currentSymbol = MYAPP.playerOneSymbol;
+      opponentSymbol = MYAPP.playerTwoSymbol;
+    }
 
-});
+    // move 代表下了之后将胜利的所有下法的集合
+    let moves: number[] = [];
+    MYAPP.winCombos.forEach(function (combo) {
+      let winCombo: number[] = [];
+      // isJoin 若为 true，则将 combo 加入当前符号的胜利组合，
+      // 为 false， 则不加入。
+      let isJoin = true;
+      for (let i = 0; i < combo.length; i++) {
+        if (localBoard[combo[i]] !== currentSymbol) {
+          // 若在当前胜利组合中有对手棋子，则这个胜利组合不会加入自身
+          if (localBoard[combo[i]] === opponentSymbol) {
+            isJoin = false
+          } else {
+            winCombo.push(combo[i])
+          }
+        }
+      }
+      // 若自身离胜利组合只差一步棋子，则加入待下的步骤
+      if (winCombo.length === 1 && isJoin) {
+        let move = winCombo[0];
+        moves.push(move);
+      }
+    });
+    return moves;
+  },
+  doubleThreatChoice: function (choiceType: string) {
+    let board = MYAPP.currentBoard;
+    let move: number | boolean;
+    let currentSymbol: unknown;
+    let opponentSymbol: unknown;
+    if (choiceType === 'win') {
+      currentSymbol = MYAPP.playerTwoSymbol;
+      opponentSymbol = MYAPP.playerOneSymbol;
+    } else if (choiceType === 'block') {
+      currentSymbol = MYAPP.playerOneSymbol;
+      opponentSymbol = MYAPP.playerTwoSymbol;
+    }
+    // 防止对角线胜利组合，例如 139
+    // 解决办法需要在中心有棋子，然后下在边路破解，否则在 19或 37 之时已经无解
+    if (board[5] === currentSymbol && MYAPP.numFilledIn === 3) {
+      if ((board[1] === opponentSymbol && board[9] === opponentSymbol)
+        || (board[3] === opponentSymbol && board[7] === opponentSymbol)) {
+        move = this.emptySide();
+      }
+    }
+
+    // 尝试进行进行对角线攻击
+    if (!move! && board[5] === opponentSymbol && MYAPP.numFilledIn === 2) {
+      move = this.diagonalSecondAttack();
+    }
+
+    // 提前思考一步，查找双重攻击（如 139，256）的可能性
+    if (!move!) {
+      for (let i = 1; i <= 9; i++) {
+        // 复制当前棋盘
+        let testBoard = $.extend({}, board);
+        if (testBoard[i] === '') {
+          testBoard[i] = currentSymbol as string;
+          if (this.winOrBlockChoice(choiceType, testBoard).length >= 2) {
+            // 代表下这一步可以进入双重攻击的局面
+            move = i;
+          }
+        }
+      }
+    }
+    return move! || false;
+  },
+  diagonalSecondAttack: function () {
+    let com = MYAPP.playerTwoSymbol;
+    let corners = [1, 3, 7, 9];
+    for (let i = 0; i < corners.length; i++) {
+      if (MYAPP.currentBoard[corners[i]] === com) {
+        return 10 - corners[i];
+      }
+    }
+    return false;
+  },
+  firstPlay: function () {
+    let corners = [1, 3, 7, 9];
+    if (MYAPP.numFilledIn === 1) {
+      // 玩家第一步下在中心
+      if (MYAPP.currentBoard[5] === MYAPP.playerOneSymbol) {
+        // 电脑随机下在四个角，为之后的对角进攻做准备
+        let random = Math.floor(Math.random() * 4);
+        return corners[random];
+      }
+    }
+    // 电脑先下，随机选择四个角或中心(false返回后到 playCenter 中去)
+    if (MYAPP.numFilledIn === 0) {
+      let random = Math.floor(Math.random() * 5);
+      if (random !== 4) {
+        return corners[random];
+      }
+    }
+    return false;
+  },
+  playCenter: function () {
+    if (MYAPP.currentBoard[5] === '') {
+      return 5;
+    }
+    return false;
+  },
+  emptyCorner: function () {
+    let corners = [1, 3, 7, 9];
+    for (let i = 0; i < corners.length; i++) {
+      if (MYAPP.currentBoard[corners[i]] === '') {
+        return corners[i];
+      }
+    }
+    return false;
+  },
+  emptySide: function () {
+    let sides = [2, 4, 6, 8]
+    for (let i = 0; i < sides.length; i++) {
+      if (MYAPP.currentBoard[sides[i]] === '') {
+        return sides[i];
+      }
+    }
+    return false;
+  }
+},
+  $(function () {
+    MYAPP.initializeGame();
+
+  });
