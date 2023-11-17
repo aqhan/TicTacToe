@@ -156,13 +156,19 @@ MYAPP.display = {
     $('.game-starter').fadeOut();
   },
   showPlayerOnePrompt: function () {
-    $('.player-one-turn p').text("Go Player 1");
-
+    if (MYAPP.secondPlayer) {
+      $('.player-one-turn p').text("Go Player 1");
+    } else {
+      $('.player-one-turn p').text("Your turn");
+    }
     $('.player-one-turn').animate({ 'top': '-45px' }, 500);
   },
   showPlayerTwoPrompt: function () {
-    $('.player-two-turn p').text("Go Player 2")
-
+    if (MYAPP.secondPlayer) {
+      $('.player-two-turn p').text("Go Player 2")
+    } else {
+      $('.player-two-turn p').text("computer's turn");
+    }
     $('.player-two-turn').animate({ 'top': '-45px' }, 500);
   },
   hidePlayerOnePrompt: function () {
@@ -228,6 +234,14 @@ MYAPP.display = {
     }
   },
   showScore: function () {
+    if (MYAPP.secondPlayer) {
+      $('.score-1').children('.name').text('player 1');
+      $('.score-2').children('.name').text('player 2');
+    }
+    else {
+      $('.score-1').children('.name').text('player 1');
+      $('.score-2').children('.name').text('computer');
+    }
     $('.score-1, .score-2').children('.points').text('0');
     $('.score-1, .score-2, .points-divider').fadeIn(500);
   },
@@ -279,7 +293,7 @@ MYAPP.game = {
         if (MYAPP.turn === 2 && !MYAPP.secondPlayer) {
           MYAPP.game.computerPlay();
         }
-      }, 1200)
+      }, 3000)
     );
   },
 
@@ -326,10 +340,16 @@ MYAPP.game = {
       // 判断是否胜利，不胜利则继续判断是否平局，不平局则继续
       if (checkWin[0]) {
         MYAPP.game.updateScore(MYAPP.turn);
+        if (MYAPP.secondPlayer) {
+          MYAPP.display.showWinMessage(MYAPP.turn);
+        } else {
+          MYAPP.turn === 1 ? MYAPP.display.showWinMessage(MYAPP.turn) :
+            MYAPP.display.showLoseMessage();
+        }
+
         MYAPP.gameInPlay = false;
         MYAPP.display.hidePlayerOnePrompt();
         MYAPP.display.hidePlayerTwoPrompt();
-        MYAPP.display.showWinMessage(MYAPP.turn);
         MYAPP.game.showWinningCombination(symbol, checkWin[1]);
         MYAPP.game.reset()
       } else if (MYAPP.numFilledIn >= 9) {
@@ -337,20 +357,25 @@ MYAPP.game = {
         MYAPP.display.hidePlayerOnePrompt();
         MYAPP.display.hidePlayerTwoPrompt();
         MYAPP.display.showDrawMessage();
+
         MYAPP.game.reset()
       } else {
         if (MYAPP.turn === 1) {
-          MYAPP.turn = 2
           MYAPP.display.hidePlayerOnePrompt();
           MYAPP.display.showPlayerTwoPrompt();
+          MYAPP.turn = 2;
           // 如果选择 one player 模式，则调用电脑
           if (!MYAPP.secondPlayer) {
-            MYAPP.game.computerPlay();
+            MYAPP.timeOuts.push(
+              setTimeout(function () {
+                MYAPP.game.computerPlay()
+              }, 1000)
+            );
           }
         } else if (MYAPP.turn === 2) {
-          MYAPP.turn = 1
           MYAPP.display.hidePlayerTwoPrompt();
           MYAPP.display.showPlayerOnePrompt();
+          MYAPP.turn = 1;
         }
       }
     }
@@ -383,19 +408,18 @@ MYAPP.game = {
   },
   reset: function () {
     MYAPP.initializeVars();
-    MYAPP.turn = MYAPP.game.whoStarts();
     MYAPP.timeOuts.push(
       setTimeout(function () {
         MYAPP.display.hideDrawMessage();
         MYAPP.display.hideLoseMessage();
         MYAPP.display.hideWinMessage();
         $('.boxes li').fadeOut();
-      }, 4000),
+      }, 5000),
       setTimeout(function () {
         MYAPP.display.resetSquares();
         $('.boxes li').fadeIn();
         MYAPP.numFilledIn = 0;
-      }, 5000),
+      }, 6000),
       setTimeout(function () {
         MYAPP.game.play();
       }, 6000)

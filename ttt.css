@@ -229,11 +229,11 @@ i.win {
 .lose-message p {
     color: white;
     text-align: center;
-    position: absolute;
+    position: relative;
+    top: 155px;
+    left: -20px;
     font-size: 2.3rem;
     margin: 0;
-    top: 150px;
-    left: 50px;
     font-family: 'Architects Daughter', sans-serif;
 }
 
