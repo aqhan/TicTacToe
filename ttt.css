@@ -303,6 +303,14 @@ i.win {
     border: 2px dashed rgba(230, 230, 230, .5);
 }
 
+.game-starter button.back-button {
+    position: absolute;
+    top: 270px;
+    right: 130px;
+    font-size: 1.5rem;
+    border: none;
+}
+
 button {
     cursor: pointer;
 }

@@ -104,6 +104,10 @@ var MYAPP: MyApp = (window as any).MYAPP || {
       MYAPP.display.showGameStarter(MYAPP.secondPlayer)
       $('.game-starter .choose-x, .game-starter .choose-o').
         off().on('click', MYAPP.game.firstGame);
+      $('.back-button').on('click', function () {
+        MYAPP.display.hideGameStarter();
+        MYAPP.display.showGameChoice();
+      });
     });
     $('.hard-reset').on('click', MYAPP.game.resetGame);
   }
@@ -366,6 +370,7 @@ MYAPP.game = {
           MYAPP.turn = 2;
           // 如果选择 one player 模式，则调用电脑
           if (!MYAPP.secondPlayer) {
+            // 增加一些延迟，对局更平滑
             MYAPP.timeOuts.push(
               setTimeout(function () {
                 MYAPP.game.computerPlay()
